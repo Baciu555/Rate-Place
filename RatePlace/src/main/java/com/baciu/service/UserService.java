@@ -92,8 +92,6 @@ public class UserService implements IUserService {
 		
 		try {
 			Files.copy(file.getInputStream(), UPLOADED_FOLDER.resolve(file.getOriginalFilename()));
-			System.out.println(UPLOADED_FOLDER + " | " + file.getOriginalFilename());
-			System.out.println("hehe");
 		} catch (FileAlreadyExistsException fileAlreadyExistsException) {
 			fileAlreadyExistsException.printStackTrace();
 			throw new FileUploadException("Nazwa pliku już istnieje, aby załadować plik zmień jego nazwe");

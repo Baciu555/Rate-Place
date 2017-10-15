@@ -41,6 +41,11 @@ public class UserDAO implements IUserDAO {
 	public void addUser(User user) {
 		entityManager.persist(user);
 	}
+	
+	public User getByUsername(String username) {
+		User user = (User) entityManager.createQuery("FROM User u WHERE u.username = ?").setParameter(1, username).getSingleResult();
+		return user;
+	}
 
 	@Override
 	public void update(User user) {
