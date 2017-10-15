@@ -63,4 +63,8 @@ public class PlaceDAO implements IPlaceDAO {
 		
 		return true;
 	}
+	
+	public Place getByPlaceName(String name) {
+		return (Place) entityManager.createQuery("FROM Place p WHERE p.name = ?").setParameter(1, name).getSingleResult();
+	}
 }
