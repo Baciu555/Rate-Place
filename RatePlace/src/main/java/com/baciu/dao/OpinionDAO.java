@@ -29,4 +29,8 @@ public class OpinionDAO implements IOpinionDAO {
 	public void addOpinion(Opinion opinion) {
 		entityManager.persist(opinion);
 	}
+	
+	public Opinion getOpinionByContent(String content) {
+		return (Opinion) entityManager.createQuery("FROM Opinion o WHERE o.content = ?").setParameter(1, content).getSingleResult();
+	}
 }
