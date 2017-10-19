@@ -21,7 +21,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import lombok.Data;
+
 @Entity
+@Data
 @Table(name = "opinion", catalog = "inzynierski")
 @SecondaryTable(name = "users")
 public class Opinion implements Serializable {
@@ -54,80 +57,5 @@ public class Opinion implements Serializable {
 
 	@Column(name = "grade")
 	private Integer grade;
-
-	public Opinion() {
-	}
-
-	public Opinion(Integer id, String content, Date entryDate, Integer grade) {
-		super();
-		this.id = id;
-		this.content = content;
-		this.entryDate = entryDate;
-		this.grade = grade;
-	}
-
-	public Opinion(Integer id, User user, Place place, String content, Date entryDate, Integer grade) {
-		super();
-		this.id = id;
-		this.user = user;
-		this.place = place;
-		this.content = content;
-		this.entryDate = entryDate;
-		this.grade = grade;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Place getPlace() {
-		return place;
-	}
-
-	public void setPlace(Place place) {
-		this.place = place;
-	}
-
-	public String getContent() {
-		return content;
-	}
-
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public Date getEntryDate() {
-		return entryDate;
-	}
-
-	public void setEntryDate(Date entryDate) {
-		this.entryDate = entryDate;
-	}
-
-	public Integer getGrade() {
-		return grade;
-	}
-
-	public void setGrade(Integer grade) {
-		this.grade = grade;
-	}
-
-	@Override
-	public String toString() {
-		return "Opinion [id=" + id + ", opinion=" + content + ", entryDate="
-				+ entryDate + ", grade=" + grade + "]";
-	}
 
 }

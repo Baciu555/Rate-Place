@@ -9,7 +9,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
+
 @Entity
+@Data
 @Table(name = "type", catalog = "inzynierski")
 public class Type implements Serializable {
 
@@ -22,35 +25,5 @@ public class Type implements Serializable {
 
 	@Column(name = "name")
 	private String name;
-
-	public Type() {
-	}
-
-	public Type(Integer id, String name) {
-		super();
-		this.id = id;
-		this.name = name;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public String toString() {
-		return "Type [id=" + id + ", name=" + name + "]";
-	}
 
 }
