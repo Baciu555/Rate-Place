@@ -27,9 +27,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude={"type", "opinions"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "place", catalog = "inzynierski")
 public class Place implements Serializable {
 

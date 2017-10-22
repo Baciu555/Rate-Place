@@ -9,14 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.baciu.dao.PlaceDAO;
 import com.baciu.entity.Place;
+import com.baciu.service.PlaceService;
 
 @Controller
 public class MainPageController {
 	
 	@Autowired
-	private PlaceDAO placeService;
+	private PlaceService placeService;
 
 	@RequestMapping(value = "main")
 	public String showMainPage(Model model, HttpSession session) {

@@ -5,17 +5,22 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.baciu.dao.PlaceDAO;
+import com.baciu.entity.Opinion;
 import com.baciu.entity.Place;
+import com.baciu.entity.User;
 import com.baciu.exception.FileUploadException;
 import com.baciu.exception.PlaceExistsException;
+import com.baciu.repository.PlaceRepository;
+import com.baciu.repository.UserRepository;
 
 @Service
 public class PlaceService implements IPlaceService {
@@ -23,31 +28,37 @@ public class PlaceService implements IPlaceService {
 	private final Path UPLOADED_FOLDER = Paths.get("uploads/placeImages");
 	
 	@Autowired
-	private PlaceDAO placeDAO;
+	private PlaceRepository placeRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	@Override
 	public List<Place> getAll() {
-		List<Place> places = placeDAO.getAll();
+		List<Place> places = (List<Place>) placeRepository.findAll();
 		return places;
 	}
 
 	@Override
 	public Place getPlace(int id) {
-		Place place = placeDAO.getPlace(id);
+		Place place = placeRepository.findOne(id);
 		return place;
 	}
 
 	@Override
 	public void addPlace(Place place) throws PlaceExistsException {
-		if (placeDAO.placeExists(place.getName()))
+		if (placeRepository.findByName(place.getName()) != null)
 			throw new PlaceExistsException("miejsce juz istnieje");
-		placeDAO.addPlace(place);
+		placeRepository.save(place);
 		
 	}
 
 	@Override
-	public List<Place> getUserPlaces(int userId) {
-		List<Place> places = placeDAO.getUserPlaces(userId);
+	public List<Place> getUserVisitedPlaces(int userId) {
+		User user = userRepository.findOne(userId);
+		Set<Opinion> opinions = user.getOpinions();
+		List<Place> places = new ArrayList<>();
+		opinions.forEach(x -> places.add(x.getPlace()));
 		return places;
 	}
 

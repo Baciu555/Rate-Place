@@ -44,7 +44,7 @@ public class AccountController {
 		int userId = (int) session.getAttribute("userId");
 		
 		model.addAttribute("user", userService.getById(userId));
-		model.addAttribute("places", placeService.getUserPlaces(userId));
+		model.addAttribute("places", placeService.getUserVisitedPlaces(userId));
 		
 		return "account";
 	}
@@ -67,19 +67,14 @@ public class AccountController {
 		if (session.getAttribute("userId") == null)
 			return "redirect:main";
 		
-		int userId = (int) session.getAttribute("userId");
-		User loggedUser = userService.getById(userId);
-		
 		if (bindingResult.hasErrors()) {
 			redirectAttributes.addFlashAttribute(bindingResult.getFieldError().getField(), bindingResult.getFieldError().getDefaultMessage());
 			return "redirect:/edit";
 		}
 		
-		loggedUser.setUsername(user.getUsername());
-		loggedUser.setEmail(user.getEmail());
-		
+		int userId = (int) session.getAttribute("userId");
 		try {
-			userService.update(loggedUser, user);
+			userService.update(user, userId);
 		} catch (UsernameExistsException e) {
 			model.addAttribute("username", e.getMessage());
 			return "edit";
@@ -105,19 +100,17 @@ public class AccountController {
 			return "redirect:main";
 		
 		int userId = (int) session.getAttribute("userId");
-		User user = userService.getById(userId);
-		user.setAvatarPath(file.getOriginalFilename());
+		String filename = file.getOriginalFilename();
 		
 		try {
 			userService.uploadAvatar(file);
-			userService.updateAvatar(user);
+			userService.updateAvatar(userId, filename);
 		} catch (Exception e) {
 			model.addAttribute("message", e.getMessage());
 			return "changeAvatar";
 		}
 		
 		model.addAttribute("message", "Zmieniono avatar");
-		
 		return "changeAvatar";
 	}
 	

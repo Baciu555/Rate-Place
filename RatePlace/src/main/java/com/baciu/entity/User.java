@@ -21,12 +21,16 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = "opinions")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "users", catalog = "inyznierski")
 public class User implements Serializable {
 

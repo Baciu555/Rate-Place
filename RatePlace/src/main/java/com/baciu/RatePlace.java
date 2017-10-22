@@ -11,9 +11,9 @@ import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
+@ComponentScan
+@EntityScan
 @SpringBootApplication
-@ComponentScan("com.baciu")
-@EntityScan(basePackages = {"com.baciu.entity"})
 public class RatePlace {
 	
 	@Bean

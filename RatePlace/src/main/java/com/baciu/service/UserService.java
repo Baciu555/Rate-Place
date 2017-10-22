@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.baciu.dao.UserDAO;
 import com.baciu.entity.User;
 import com.baciu.exception.EmailExistsException;
 import com.baciu.exception.FileUploadException;
 import com.baciu.exception.UsernameExistsException;
+import com.baciu.repository.UserRepository;
 
 @Service
 public class UserService implements IUserService {
@@ -26,11 +26,19 @@ public class UserService implements IUserService {
 	private final String DEFAULT_AVATAR = "default-avatar.jpg";
 	
 	@Autowired
-	private UserDAO userDAO;
+	private UserRepository userRepository;
+	
+	public User findByUsernameAndPassword() {
+		User user = new User();
+		user.setUsername("XDD");
+		user.setPassword("XDD");
+		user = userRepository.findByUsernameAndPassword("pisak", "12345");
+		return user;
+	}
 
 	@Override
 	public int logIn(String username, String password) {
-		User user = userDAO.logIn(username, password);
+		User user = userRepository.findByUsernameAndPassword(username, password);
 		if (user == null)
 			return -1;
 		
@@ -39,7 +47,7 @@ public class UserService implements IUserService {
 
 	@Override
 	public User getById(int id) {
-		return userDAO.getById(id);
+		return userRepository.findOne(id);
 	}
 
 	@Override
@@ -48,41 +56,42 @@ public class UserService implements IUserService {
 			throw new Exception("hasla nie sa identyczne");
 		}
 		
-		if (userDAO.usernameExists(user.getUsername())) {
-			System.out.println("1");
+		if (userRepository.findByUsername(user.getUsername()) != null) {
 			throw new Exception("nazwa uzytkownika zajeta");
 		}
 		
-		if (userDAO.emailExists(user.getEmail())) {
-			System.out.println("2");
+		if (userRepository.findByEmail(user.getEmail()) != null) {
 			throw new Exception("email zajety");
 		}
 		
 		user.setRegisterDate(new Date());
 		user.setAvatarPath(DEFAULT_AVATAR);
-		userDAO.addUser(user);
+		userRepository.save(user);
 
 	}
 
 	@Override
-	public void update(User loggedUser, User user) throws UsernameExistsException, EmailExistsException {
+	public void update(User user, int userId) throws UsernameExistsException, EmailExistsException {
+		User loggedUser = userRepository.findOne(userId);
 		if (!loggedUser.getUsername().equals(user.getUsername()))
-			if (userDAO.usernameExists(user.getUsername()))
+			if (userRepository.findByUsername(user.getUsername()) != null)
 				throw new UsernameExistsException("Nazwa juz zajeta");
 		
 		if (!loggedUser.getEmail().equals(user.getEmail()))
-			if (userDAO.emailExists(user.getEmail()))
+			if (userRepository.findByEmail(user.getEmail()) != null)
 				throw new EmailExistsException("Email juz zajety");
 		
-		user.setId(loggedUser.getId());
+		loggedUser.setUsername(user.getUsername());
+		loggedUser.setEmail(user.getEmail());
 		
-		userDAO.update(user);
-
+		userRepository.save(loggedUser);
 	}
 	
 	@Override
-	public void updateAvatar(User user) {
-		userDAO.updateAvatar(user);
+	public void updateAvatar(int userId, String filename) {
+		User user = userRepository.findOne(userId);
+		user.setAvatarPath(filename);
+		userRepository.save(user);
 	}
 
 	@Override

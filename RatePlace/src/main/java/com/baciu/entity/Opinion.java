@@ -20,11 +20,15 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude={"place", "user"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "opinion", catalog = "inzynierski")
 @SecondaryTable(name = "users")
 public class Opinion implements Serializable {

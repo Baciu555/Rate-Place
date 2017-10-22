@@ -11,7 +11,7 @@ import com.baciu.service.PlaceService;
 import com.baciu.service.UserService;
 
 @Controller
-public class ProfileController {
+public class ProfilesController {
 	
 	@Autowired
 	private UserService userService;
@@ -24,7 +24,7 @@ public class ProfileController {
 		User user = userService.getById(id);
 		if (user == null)
 			return "redirect:/main";
-		model.addAttribute("places", placeService.getUserPlaces(id));
+		model.addAttribute("places", placeService.getUserVisitedPlaces(id));
 		model.addAttribute("user", user);
 		return "profile";
 	}
