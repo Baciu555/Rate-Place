@@ -7,6 +7,6 @@ import com.baciu.entity.Opinion;
 public interface IOpinionService {
 	
 	List<Opinion> getByPlaceId(int placeId);
-	void addOpinion(Opinion opinion);
+	Opinion addOpinion(Opinion opinion);
 
 }

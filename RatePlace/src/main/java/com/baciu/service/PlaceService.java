@@ -46,10 +46,10 @@ public class PlaceService implements IPlaceService {
 	}
 
 	@Override
-	public void addPlace(Place place) throws PlaceExistsException {
+	public Place addPlace(Place place) throws PlaceExistsException {
 		if (placeRepository.findByName(place.getName()) != null)
 			throw new PlaceExistsException("miejsce juz istnieje");
-		placeRepository.save(place);
+		return placeRepository.save(place);
 		
 	}
 

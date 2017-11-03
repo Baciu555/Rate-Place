@@ -11,7 +11,7 @@ public interface IPlaceService {
 	
 	List<Place> getAll();
 	Place getPlace(int id);
-	void addPlace(Place place) throws PlaceExistsException;
+	Place addPlace(Place place) throws PlaceExistsException;
 	List<Place> getUserVisitedPlaces(int userId);
 	void uploadAvatar(MultipartFile file) throws Exception;
 

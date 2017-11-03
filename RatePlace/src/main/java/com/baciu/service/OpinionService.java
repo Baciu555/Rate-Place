@@ -22,9 +22,9 @@ public class OpinionService implements IOpinionService {
 	}
 
 	@Override
-	public void addOpinion(Opinion opinion) {
+	public Opinion addOpinion(Opinion opinion) {
 		opinion.setEntryDate(new Date());
-		opinionRepository.save(opinion);
+		return opinionRepository.save(opinion);
 	}
 
 }

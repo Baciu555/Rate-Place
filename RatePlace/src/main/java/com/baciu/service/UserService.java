@@ -27,14 +27,6 @@ public class UserService implements IUserService {
 	
 	@Autowired
 	private UserRepository userRepository;
-	
-	public User findByUsernameAndPassword() {
-		User user = new User();
-		user.setUsername("XDD");
-		user.setPassword("XDD");
-		user = userRepository.findByUsernameAndPassword("pisak", "12345");
-		return user;
-	}
 
 	@Override
 	public int logIn(String username, String password) {
@@ -51,7 +43,7 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public void addUser(User user, String passwordConfirm) throws Exception {
+	public User addUser(User user, String passwordConfirm) throws Exception {
 		if (!user.getPassword().equals(passwordConfirm)) {
 			throw new Exception("hasla nie sa identyczne");
 		}
@@ -66,32 +58,35 @@ public class UserService implements IUserService {
 		
 		user.setRegisterDate(new Date());
 		user.setAvatarPath(DEFAULT_AVATAR);
-		userRepository.save(user);
-
+		return userRepository.save(user);
 	}
 
 	@Override
-	public void update(User user, int userId) throws UsernameExistsException, EmailExistsException {
+	public User update(User user, int userId) throws UsernameExistsException, EmailExistsException {
 		User loggedUser = userRepository.findOne(userId);
 		if (!loggedUser.getUsername().equals(user.getUsername()))
 			if (userRepository.findByUsername(user.getUsername()) != null)
 				throw new UsernameExistsException("Nazwa juz zajeta");
 		
+		System.out.println("XD1");
+		
 		if (!loggedUser.getEmail().equals(user.getEmail()))
 			if (userRepository.findByEmail(user.getEmail()) != null)
 				throw new EmailExistsException("Email juz zajety");
 		
+		System.out.println("XD2");
+		
 		loggedUser.setUsername(user.getUsername());
 		loggedUser.setEmail(user.getEmail());
 		
-		userRepository.save(loggedUser);
+		return userRepository.save(loggedUser);
 	}
 	
 	@Override
-	public void updateAvatar(int userId, String filename) {
+	public User updateAvatar(int userId, String filename) {
 		User user = userRepository.findOne(userId);
 		user.setAvatarPath(filename);
-		userRepository.save(user);
+		return userRepository.save(user);
 	}
 
 	@Override
