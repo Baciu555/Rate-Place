@@ -1,24 +1,21 @@
-package com.baciu;
+package com.baciu.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.baciu.dao.OpinionDAO;
 import com.baciu.entity.Opinion;
 import com.baciu.entity.Place;
 import com.baciu.entity.User;
-import com.baciu.service.OpinionService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,17 +24,6 @@ public class OpinionServiceTests {
 	
 	@Autowired
 	private OpinionService opinionService;
-	
-	@Autowired
-	private OpinionDAO opinionDAO;
-	
-	@Before
-	public void setUp() {
-	}
-	
-	@After
-	public void tearDown() {
-	}
 	
 	@Test
 	public void testAddOpinion() {
@@ -52,21 +38,27 @@ public class OpinionServiceTests {
 		user.setId(12);
 		opinion.setUser(user);
 		
-		opinionService.addOpinion(opinion);
-		Opinion newOpinion = opinionDAO.getOpinionByContent("New Opinion");
+		Opinion newOpinion = opinionService.addOpinion(opinion);
 		
-		Assert.assertNotNull("failure - expected not null", newOpinion);
-		Assert.assertEquals(newOpinion.getContent(), "New Opinion");
-		Assert.assertEquals(newOpinion.getPlace().getId(), new Integer(1));
-		Assert.assertEquals(newOpinion.getUser().getId(), new Integer(12));
+		assertThat(newOpinion.getContent()).isEqualTo("New Opinion");
+		assertThat(newOpinion.getGrade()).isEqualTo(5);
+		assertThat(newOpinion.getPlace().getId()).isEqualTo(1);
+		assertThat(newOpinion.getUser().getId()).isEqualTo(12);
 	}
 	
 	@Test
 	public void testGetByPlaceId() {
 		List<Opinion> opinions = opinionService.getByPlaceId(1);
 		
-		Assert.assertNotNull("failure - expected not null", opinions);
-		Assert.assertEquals("failure - expected list size", 1, opinions.size());
+		assertThat(opinions).isNotNull();
+		assertThat(opinions.size()).isEqualTo(1);
+	}
+	
+	@Test
+	public void testGetByPlaceIdFailure() {
+		List<Opinion> opinions = opinionService.getByPlaceId(Integer.MAX_VALUE);
+		
+		assertThat(opinions).isEmpty();
 	}
 
 }
