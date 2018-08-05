@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Oceń miejsce</title>
+<link rel="stylesheet"
+	href=".../css/bootstrap-3.3.7-dist/css/bootstrap.css"
+	th:href="@{/css/bootstrap-3.3.7-dist/css/bootstrap.css}" />
+<link rel="stylesheet" href=".../css/bootstrap-3.3.7-dist/css/style.css"
+	th:href="@{/css/bootstrap-3.3.7-dist/css/style.css}" />
+</head>
+<body>
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/main">Strona główna</a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li th:if="${not #lists.isEmpty(session.userId)}"><a href="/addPlace">Dodaj Miejsce</a></li>
+				</ul>
+				<ul th:if="${#lists.isEmpty(session.userId)}" class="nav navbar-nav navbar-right">
+					<li><a href="/login">Zaloguj sie</a></li>
+				</ul>
+				<ul th:if="${not #lists.isEmpty(session.userId)}" class="nav navbar-nav navbar-right">
+					<li><a href="/logout">Wyloguj</a></li>
+				</ul>
+				<ul th:if="${not #lists.isEmpty(session.userId)}" class="nav navbar-nav navbar-right">
+					<li><a href="/account">Konto</a></li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- /.container-fluid -->
+	</nav>
+
+	<main>
+
+
+	<div class="container">
+		<div class="map-wrapper">
+			<div id="map"></div>
+		</div>
+		<div class="panel-group place-details">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h2 th:text="${place.name}"></h2>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12">
+						
+							<div id="image">
+								<img class="img-responsive" th:src="@{'/placeImage/' + ${place.imagePath}}"/>
+							</div>
+							<div id="description">
+								<p>
+									Opis: <span th:text="${place.description}"></span>
+								</p>
+							</div>
+							<div id="type">
+								<p>
+									Typ: <span th:text="${place.type.name}"></span>
+								</p>
+							</div>
+							<div th:if="${not #lists.isEmpty(place.avgGrade)}" id="avg_grade">
+								<p>
+									Średnia ocena: <span th:text="${#numbers.formatDecimal(place.avgGrade, 1, 1)}"></span>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<h3 class="center">Opinie</h3>
+
+		<p class="center" th:if="${#lists.isEmpty(opinions)}">Miejsce
+			zostało jeszcze ocenione</p>
+
+		<p class="center" th:if="${#lists.isEmpty(session.userId)}">
+			Aby ocenic miejsce musisz sie <a th:href="@{'/login'}">zalogowac</a>
+		</p>
+
+		<form th:if="${not #lists.isEmpty(session.userId)}" id="opinionForm" th:action="@{'/place/' + ${placeId}}"
+			method="post" th:object="${opinion}">
+
+			<span th:text="${errorMsg}" class="bg-danger"></span>
+
+			<div class="form-group">
+				<label for="place-name">Ocena:</label> <select class="form-control"
+					th:field="*{grade}" id="type">
+					<option value="5">5</option>
+					<option value="4">4</option>
+					<option value="3">3</option>
+					<option value="2">2</option>
+					<option value="1">1</option>
+				</select>
+			</div>
+
+			<div class="form-group">
+				<label for="description">Opis:</label>
+				<textarea rows="6" cols="20" class="form-control"
+					th:field="*{content}" id="description"></textarea>
+				<p class="bg-danger" th:text="${content}"></p>
+			</div>
+
+			<button type="submit" class="btn btn-primary" id="register-submit">Wyślij</button>
+			<p class="bg-success" th:text="${successMsg}"></p>
+		</form>
+
+
+
+
+		<div class="media comment-section">
+			<div class="row">
+				<div th:each="opinion : ${opinions}" class="col-xs-12 col-sm-12 col-md-12 place-opinion">
+					<div class="row">
+					
+						<div class="col-xs-0 col-sm-1 col-md-1">
+							<img id="avatar" class="img-responsive" th:src="@{'/avatar/' + ${opinion.user.avatarPath}}"/>
+						</div>
+						<div class="col-xs-6 col-sm-5 col-md-5">
+							<span class="thread-name">Autor: <a th:href="@{'/profile/' + ${opinion.user.id}}"><span th:text="${opinion.user.username}"></span></a></span>
+						</div>
+						<div class="col-xs-6 col-sm-6 col-md-6">
+							<span class="thread-points pull-right" th:text="${opinion.entryDate}"></span>
+						</div>
+						<div class="col-xs-12 col-sm-6 col-md-6">
+							<span>Ocena: <span th:text="${opinion.grade}"></span></span>
+						</div>
+						<div class="col-xs-12 col-sm-11 col-md-11">
+							<p class="thread-preview" th:text="${opinion.content}"></p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr></hr>
+		</div>
+	</div>
+	</main>
+
+	<footer class="footer">
+		<div class="container">
+			<span class="text-muted">Wojciech Bać © 2017</span>
+		</div>
+	</footer>
+
+	<script th:src="@{/js/jquery-3.1.1.min.js}"></script>
+	<script th:src="@{/css/bootstrap-3.3.7-dist/js/bootstrap.js}"></script>
+	<script th:src="@{/js/get_place.js}"></script>
+	<script async="async" defer="defer"
+		th:src="@{https://maps.googleapis.com/maps/api/js?key=AIzaSyDAFRG4nmWUTnmG61UhiNBcKo5kIs44P9Y&amp;callback=initMap}">
+		
+	</script>
+</body>
+</html>
